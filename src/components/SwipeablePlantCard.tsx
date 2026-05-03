@@ -1,3 +1,4 @@
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -75,12 +76,11 @@ export function SwipeablePlantCard({ plantId, onDelete }: SwipeablePlantCardProp
       <Animated.View style={[styles.deleteBg, deleteStyle]}>
         <TouchableOpacity
           onPress={handleDelete}
-          style={{ alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
+          style={{ alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', gap: 4 }}
+          activeOpacity={0.85}
         >
-          <Text style={{ fontSize: 24 }}>🗑️</Text>
-          <Text style={{ color: colors.white, fontSize: 12, fontWeight: '500', marginTop: 4 }}>
-            Supprimer
-          </Text>
+          <Feather name="trash-2" size={22} color={colors.white} />
+          <Text style={styles.deleteText}>Supprimer</Text>
         </TouchableOpacity>
       </Animated.View>
 
@@ -88,34 +88,34 @@ export function SwipeablePlantCard({ plantId, onDelete }: SwipeablePlantCardProp
         <Animated.View style={cardStyle}>
           <TouchableOpacity
             onPress={handlePress}
-            activeOpacity={0.8}
+            activeOpacity={0.85}
             style={styles.card}
           >
             <View style={styles.emojiBox}>
               <Text style={{ fontSize: 28 }}>{species?.emoji ?? '🌿'}</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Text style={styles.name}>{plant.name}</Text>
                 <Text style={{ fontSize: 12 }}>{stageEmoji}</Text>
               </View>
               <Text style={styles.species}>{species?.name}</Text>
-              <View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>
+              <View style={{ flexDirection: 'row', gap: 14, marginTop: 8 }}>
                 <View style={styles.metaItem}>
-                  <Text style={{ fontSize: 12 }}>💧</Text>
+                  <Feather name="droplet" size={11} color={colors.waterText} />
                   <Text style={styles.metaText}>{formatNextCareDate(nextWatering)}</Text>
                 </View>
                 <View style={styles.metaItem}>
-                  <Text style={{ fontSize: 12 }}>🔥</Text>
+                  <Feather name="zap" size={11} color={colors.brand} />
                   <Text style={styles.metaText}>{streak}j</Text>
                 </View>
                 <View style={styles.metaItem}>
-                  <Text style={{ fontSize: 12 }}>📅</Text>
+                  <Feather name="calendar" size={11} color={colors.textSubtle} />
                   <Text style={styles.metaText}>{ageInDays}j</Text>
                 </View>
               </View>
             </View>
-            <Text style={{ color: colors.bark600, fontSize: 18 }}>›</Text>
+            <Feather name="chevron-right" size={20} color={colors.textSubtle} />
           </TouchableOpacity>
         </Animated.View>
       </GestureDetector>
@@ -124,36 +124,39 @@ export function SwipeablePlantCard({ plantId, onDelete }: SwipeablePlantCardProp
 }
 
 const styles = StyleSheet.create({
-  container: { marginBottom: 12, borderRadius: 16, overflow: 'hidden' },
+  container: { marginBottom: 10, borderRadius: 16, overflow: 'hidden' },
   deleteBg: {
     position: 'absolute',
     right: 0,
     top: 0,
     bottom: 0,
     width: 112,
-    backgroundColor: colors.red500,
+    backgroundColor: colors.danger,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  deleteText: { color: colors.white, fontSize: 12, fontWeight: '600' },
   card: {
-    backgroundColor: colors.forest700,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
     borderRadius: 16,
-    padding: 16,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
   },
   emojiBox: {
     width: 56,
     height: 56,
-    borderRadius: 12,
-    backgroundColor: colors.forest800,
+    borderRadius: 14,
+    backgroundColor: colors.brandSofter,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
   },
-  name: { color: colors.bark100, fontWeight: '600', fontSize: 16 },
-  species: { color: colors.bark600, fontSize: 12, marginTop: 2 },
+  name: { color: colors.text, fontWeight: '700', fontSize: 15 },
+  species: { color: colors.textSubtle, fontSize: 12, marginTop: 2 },
   metaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  metaText: { color: colors.bark400, fontSize: 12 },
+  metaText: { color: colors.textMuted, fontSize: 12, fontWeight: '500' },
 });

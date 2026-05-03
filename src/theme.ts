@@ -1,35 +1,47 @@
 export const colors = {
-  forest950: '#0A1409',
-  forest900: '#0F1A0F',
-  forest800: '#152415',
-  forest700: '#1A2E1A',
-  forest600: '#1E3A1E',
-  leaf300: '#86EFAC',
-  leaf400: '#4ADE80',
-  leaf500: '#22C55E',
-  leaf600: '#16A34A',
-  bark100: '#F0FDF4',
-  bark200: '#DCFCE7',
-  bark400: '#94A3B8',
-  bark600: '#6B7280',
+  // Surfaces
+  bg: '#FAFAF9',
+  surface: '#FFFFFF',
+  surfaceAlt: '#F4F4F5',
+  surfaceSubtle: '#F9FAFB',
+
+  // Borders
+  border: '#E5E7EB',
+  borderStrong: '#D4D4D8',
+  divider: '#F1F5F9',
+
+  // Text
+  text: '#0F172A',
+  textMuted: '#52525B',
+  textSubtle: '#94A3B8',
+  textInverse: '#FFFFFF',
+
+  // Brand
+  brand: '#16A34A',
+  brandStrong: '#15803D',
+  brandSoft: '#DCFCE7',
+  brandSofter: '#F0FDF4',
+
+  // Care chip backgrounds (pastel) + text
+  waterBg: '#DBEAFE',
+  waterText: '#1D4ED8',
+  fertBg: '#FEF3C7',
+  fertText: '#A16207',
+  repotBg: '#FFEDD5',
+  repotText: '#C2410C',
+  pruneBg: '#DCFCE7',
+  pruneText: '#15803D',
+
+  // Status
+  alertBg: '#FFEDD5',
+  alertText: '#9A3412',
+  dangerBg: '#FEE2E2',
+  dangerText: '#B91C1C',
+  danger: '#EF4444',
+
+  // Misc
   white: '#FFFFFF',
-  red500: '#EF4444',
-  red400: '#F87171',
-  red900: '#7F1D1D',
-  red950: '#450A0A',
-  blue200: '#BFDBFE',
-  blue300: '#93C5FD',
-  blue900: '#1E3A8A',
-  blue950: '#172554',
-  yellow300: '#FDE047',
-  yellow800: '#854D0E',
-  yellow900: '#713F12',
-  orange200: '#FED7AA',
-  orange900: '#7C2D12',
-  amber900: '#78350F',
-  green800: '#166534',
-  green900: '#14532D',
-  gray700: '#374151',
+  black: '#000000',
 };
 
 export const radii = {
@@ -47,4 +59,21 @@ export const spacing = {
   lg: 16,
   xl: 24,
   xxl: 32,
+};
+
+export const shadow = {
+  card: {
+    shadowColor: '#0F172A',
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
+  subtle: {
+    shadowColor: '#0F172A',
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
+  },
 };

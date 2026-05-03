@@ -1,3 +1,4 @@
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,7 +7,7 @@ import { getSpeciesById } from '../../src/data/species';
 import { getAdjustedWateringDays, getGrowthStage } from '../../src/hooks/useCareLogic';
 import { useWeather } from '../../src/hooks/useWeather';
 import { usePlantStore } from '../../src/store/usePlantStore';
-import { colors } from '../../src/theme';
+import { colors, shadow } from '../../src/theme';
 
 const STAGE_LABELS = ['Graine', 'Pousse', 'Jeune plante', 'Plante mature', 'Épanouie'];
 
@@ -49,7 +50,9 @@ export default function HomeScreen() {
   if (!activePlant || !species) {
     return (
       <SafeAreaView style={styles.emptyContainer}>
-        <Text style={styles.emptyEmoji}>🌱</Text>
+        <View style={styles.emptyIcon}>
+          <Text style={{ fontSize: 48 }}>🌱</Text>
+        </View>
         <Text style={styles.emptyTitle}>Bienvenue sur Plantify</Text>
         <Text style={styles.emptyText}>
           Ajoute ta première plante pour commencer à prendre soin d'elle.
@@ -57,8 +60,10 @@ export default function HomeScreen() {
         <TouchableOpacity
           onPress={() => router.push('/(tabs)/discover')}
           style={styles.primaryButton}
+          activeOpacity={0.85}
         >
           <Text style={styles.primaryButtonText}>Découvrir des plantes</Text>
+          <Feather name="arrow-right" size={18} color={colors.textInverse} />
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -73,68 +78,80 @@ export default function HomeScreen() {
       >
         <View style={styles.header}>
           <View>
+            <Text style={styles.greeting}>Bonjour</Text>
             <Text style={styles.title}>{activePlant.name}</Text>
             <Text style={styles.subtitle}>{species.name}</Text>
           </View>
           <View style={styles.weatherPill}>
-            <Text>{weatherEmoji}</Text>
+            <Text style={{ fontSize: 14 }}>{weatherEmoji}</Text>
             <Text style={styles.weatherText}>{weather.temp}°C</Text>
           </View>
         </View>
 
         {weather.isHeatAlert && (
           <View style={styles.alertBox}>
-            <Text style={{ fontSize: 18 }}>🔥</Text>
+            <View style={styles.alertIcon}>
+              <Text style={{ fontSize: 14 }}>🔥</Text>
+            </View>
             <Text style={styles.alertText}>
               Forte chaleur — surveille l'hydratation de {activePlant.name}
             </Text>
           </View>
         )}
 
-        <View style={styles.cardsRow}>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>Âge</Text>
-            <Text style={styles.statValue}>{ageInDays}</Text>
-            <Text style={styles.statUnit}>jours</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>Streak</Text>
-            <Text style={[styles.statValue, { color: colors.leaf400 }]}>{streak}</Text>
-            <Text style={styles.statUnit}>🔥 de suite</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>Arrosage</Text>
-            <Text style={[styles.statValue, { color: colors.blue300 }]}>
-              {daysUntilWatering !== null
-                ? daysUntilWatering <= 0
-                  ? '!'
-                  : `J-${daysUntilWatering}`
-                : '—'}
-            </Text>
-            <Text style={styles.statUnit}>jours</Text>
-          </View>
-        </View>
-
+        {/* Mascot */}
         <View style={styles.mascotSection}>
           <PlantMascot speciesId={species.id} ageInDays={ageInDays} size={220} />
           <View style={styles.stagePill}>
+            <View style={styles.stageDot} />
             <Text style={styles.stagePillText}>
               Stade {stage} · {STAGE_LABELS[stage - 1]}
             </Text>
           </View>
         </View>
 
+        {/* Info cards */}
+        <View style={styles.cardsRow}>
+          <View style={styles.statCard}>
+            <Feather name="calendar" size={16} color={colors.brand} />
+            <Text style={styles.statValue}>{ageInDays}</Text>
+            <Text style={styles.statLabel}>jours</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Feather name="zap" size={16} color={colors.brand} />
+            <Text style={styles.statValue}>{streak}</Text>
+            <Text style={styles.statLabel}>streak</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Feather name="droplet" size={16} color={colors.brand} />
+            <Text style={styles.statValue}>
+              {daysUntilWatering !== null
+                ? daysUntilWatering <= 0
+                  ? '!'
+                  : `${daysUntilWatering}j`
+                : '—'}
+            </Text>
+            <Text style={styles.statLabel}>arrosage</Text>
+          </View>
+        </View>
+
+        {/* Tip */}
         <View style={styles.tipBox}>
-          <Text style={styles.tipLabel}>Conseil du jour</Text>
+          <View style={styles.tipHeader}>
+            <Feather name="info" size={14} color={colors.brand} />
+            <Text style={styles.tipLabel}>Conseil du jour</Text>
+          </View>
           <Text style={styles.tipText}>{species.wateringTips}</Text>
         </View>
 
+        {/* CTA */}
         <TouchableOpacity
           onPress={() => router.push(`/plant/${activePlant.id}`)}
           style={styles.detailButton}
+          activeOpacity={0.85}
         >
           <Text style={styles.detailButtonText}>Voir tous les soins</Text>
-          <Text style={{ color: colors.forest900 }}>→</Text>
+          <Feather name="arrow-right" size={18} color={colors.textInverse} />
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -142,106 +159,140 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.forest900 },
+  container: { flex: 1, backgroundColor: colors.bg },
   emptyContainer: {
     flex: 1,
-    backgroundColor: colors.forest900,
+    backgroundColor: colors.bg,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 32,
   },
-  emptyEmoji: { fontSize: 64, marginBottom: 24 },
+  emptyIcon: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: colors.brandSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
   emptyTitle: {
-    color: colors.bark100,
+    color: colors.text,
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 12,
+    fontWeight: '700',
+    marginBottom: 8,
     textAlign: 'center',
   },
-  emptyText: { color: colors.bark600, textAlign: 'center', marginBottom: 32 },
+  emptyText: { color: colors.textMuted, textAlign: 'center', marginBottom: 32, lineHeight: 22 },
   primaryButton: {
-    backgroundColor: colors.leaf400,
+    backgroundColor: colors.brand,
     borderRadius: 999,
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-  },
-  primaryButtonText: { color: colors.forest900, fontWeight: 'bold', fontSize: 16 },
-  header: {
+    paddingHorizontal: 24,
+    paddingVertical: 14,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
+  },
+  primaryButtonText: { color: colors.textInverse, fontWeight: '600', fontSize: 15 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-    paddingTop: 16,
+    paddingTop: 12,
     paddingBottom: 8,
   },
-  title: { color: colors.bark100, fontSize: 24, fontWeight: 'bold' },
-  subtitle: { color: colors.bark600, fontSize: 14 },
+  greeting: { color: colors.textSubtle, fontSize: 13, fontWeight: '500' },
+  title: { color: colors.text, fontSize: 26, fontWeight: '700', marginTop: 2 },
+  subtitle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
   weatherPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.forest700,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    gap: 4,
+    gap: 6,
   },
-  weatherText: { color: colors.bark100, fontWeight: '600', fontSize: 14 },
+  weatherText: { color: colors.text, fontWeight: '600', fontSize: 13 },
   alertBox: {
     marginHorizontal: 24,
-    marginBottom: 12,
-    backgroundColor: colors.orange900,
-    borderRadius: 12,
+    marginVertical: 12,
+    backgroundColor: colors.alertBg,
+    borderRadius: 14,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
   },
-  alertText: { color: colors.orange200, fontSize: 14, flex: 1 },
-  cardsRow: { flexDirection: 'row', paddingHorizontal: 24, gap: 12, marginBottom: 24 },
+  alertIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#FED7AA',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  alertText: { color: colors.alertText, fontSize: 13, flex: 1, fontWeight: '500' },
+  mascotSection: { alignItems: 'center', paddingVertical: 12 },
+  stagePill: {
+    marginTop: 12,
+    backgroundColor: colors.brandSofter,
+    borderWidth: 1,
+    borderColor: colors.brandSoft,
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  stageDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.brand },
+  stagePillText: { color: colors.brandStrong, fontSize: 13, fontWeight: '600' },
+  cardsRow: { flexDirection: 'row', paddingHorizontal: 24, gap: 12, marginTop: 16, marginBottom: 16 },
   statCard: {
     flex: 1,
-    backgroundColor: colors.forest700,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
     borderRadius: 16,
-    padding: 16,
+    paddingVertical: 16,
     alignItems: 'center',
+    gap: 4,
   },
-  statLabel: { color: colors.bark400, fontSize: 12, marginBottom: 4 },
-  statValue: { color: colors.bark100, fontSize: 24, fontWeight: 'bold' },
-  statUnit: { color: colors.bark600, fontSize: 12 },
-  mascotSection: { alignItems: 'center', paddingVertical: 16 },
-  stagePill: {
-    marginTop: 16,
-    backgroundColor: colors.forest700,
-    borderRadius: 999,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  stagePillText: { color: colors.leaf400, fontSize: 14, fontWeight: '600' },
+  statValue: { color: colors.text, fontSize: 22, fontWeight: '700' },
+  statLabel: { color: colors.textSubtle, fontSize: 11, fontWeight: '500' },
   tipBox: {
     marginHorizontal: 24,
-    marginTop: 16,
-    backgroundColor: colors.forest700,
+    marginTop: 4,
+    backgroundColor: colors.brandSofter,
+    borderWidth: 1,
+    borderColor: colors.brandSoft,
     borderRadius: 16,
     padding: 16,
   },
+  tipHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
   tipLabel: {
-    color: colors.bark400,
+    color: colors.brandStrong,
     fontSize: 12,
-    marginBottom: 8,
+    fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-  tipText: { color: colors.bark100, fontSize: 14, lineHeight: 20 },
+  tipText: { color: colors.text, fontSize: 14, lineHeight: 20 },
   detailButton: {
     marginHorizontal: 24,
     marginTop: 16,
-    backgroundColor: colors.leaf400,
+    backgroundColor: colors.brand,
     borderRadius: 16,
-    padding: 16,
+    paddingVertical: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    ...shadow.subtle,
   },
-  detailButtonText: { color: colors.forest900, fontWeight: 'bold', fontSize: 16 },
+  detailButtonText: { color: colors.textInverse, fontWeight: '600', fontSize: 15 },
 });
