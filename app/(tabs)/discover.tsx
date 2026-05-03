@@ -1,3 +1,4 @@
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -12,10 +13,10 @@ import { colors } from '../../src/theme';
 
 const CATEGORIES: PlantCategory[] = ['bonsai', 'cactus', 'tropical', 'classic', 'aromatic'];
 
-const DIFFICULTY_BG: Record<string, string> = {
-  easy: colors.green800,
-  medium: colors.yellow800,
-  hard: colors.red900,
+const DIFFICULTY_STYLE: Record<string, { bg: string; text: string }> = {
+  easy: { bg: '#DCFCE7', text: '#15803D' },
+  medium: { bg: '#FEF3C7', text: '#A16207' },
+  hard: { bg: '#FEE2E2', text: '#B91C1C' },
 };
 
 const DIFFICULTY_LABELS: Record<string, string> = {
@@ -26,38 +27,45 @@ const DIFFICULTY_LABELS: Record<string, string> = {
 
 function SpeciesCard({ species }: { species: PlantSpecies }) {
   const router = useRouter();
+  const diff = DIFFICULTY_STYLE[species.difficulty];
   return (
     <TouchableOpacity
       onPress={() => router.push(`/add/${species.id}`)}
-      activeOpacity={0.8}
+      activeOpacity={0.85}
       style={styles.card}
     >
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
         <View style={styles.emojiBox}>
-          <Text style={{ fontSize: 24 }}>{species.emoji}</Text>
+          <Text style={{ fontSize: 28 }}>{species.emoji}</Text>
         </View>
         <View style={{ flex: 1 }}>
           <View style={styles.nameRow}>
             <Text style={styles.name}>{species.name}</Text>
-            <View
-              style={[styles.difficultyPill, { backgroundColor: DIFFICULTY_BG[species.difficulty] }]}
-            >
-              <Text style={{ color: colors.white, fontSize: 12 }}>
+            <View style={[styles.difficultyPill, { backgroundColor: diff.bg }]}>
+              <Text style={[styles.difficultyText, { color: diff.text }]}>
                 {DIFFICULTY_LABELS[species.difficulty]}
               </Text>
             </View>
           </View>
           <Text style={styles.scientific}>{species.scientificName}</Text>
-          <Text style={styles.description}>{species.description}</Text>
-          <View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>
-            <Text style={styles.metaText}>💧 Tous les {species.wateringFrequencyDays}j</Text>
-            <Text style={styles.metaText}>
-              {species.sunlight === 'full'
-                ? '☀️ Plein soleil'
-                : species.sunlight === 'partial'
-                ? '🌤 Mi-ombre'
-                : '🌑 Ombre'}
-            </Text>
+          <Text numberOfLines={2} style={styles.description}>
+            {species.description}
+          </Text>
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 8, flexWrap: 'wrap' }}>
+            <View style={styles.metaItem}>
+              <Feather name="droplet" size={11} color={colors.textSubtle} />
+              <Text style={styles.metaText}>Tous les {species.wateringFrequencyDays}j</Text>
+            </View>
+            <View style={styles.metaItem}>
+              <Feather name="sun" size={11} color={colors.textSubtle} />
+              <Text style={styles.metaText}>
+                {species.sunlight === 'full'
+                  ? 'Plein soleil'
+                  : species.sunlight === 'partial'
+                  ? 'Mi-ombre'
+                  : 'Ombre'}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
@@ -81,18 +89,19 @@ export default function DiscoverScreen() {
     <SafeAreaView style={styles.container}>
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 12 }}>
         <Text style={styles.title}>Découvrir</Text>
+        <Text style={styles.subtitle}>50 espèces à adopter</Text>
         <View style={styles.searchBox}>
-          <Text style={{ color: colors.bark600, marginRight: 8 }}>🔍</Text>
+          <Feather name="search" size={16} color={colors.textSubtle} />
           <TextInput
             value={search}
             onChangeText={setSearch}
             placeholder="Rechercher une plante..."
-            placeholderTextColor={colors.bark600}
+            placeholderTextColor={colors.textSubtle}
             style={styles.searchInput}
           />
           {search.length > 0 && (
             <TouchableOpacity onPress={() => setSearch('')}>
-              <Text style={{ color: colors.bark600, fontSize: 18 }}>×</Text>
+              <Feather name="x" size={16} color={colors.textSubtle} />
             </TouchableOpacity>
           )}
         </View>
@@ -107,11 +116,12 @@ export default function DiscoverScreen() {
         <TouchableOpacity
           onPress={() => setActiveCategory('all')}
           style={[styles.chip, activeCategory === 'all' && styles.chipActive]}
+          activeOpacity={0.85}
         >
           <Text
             style={[
               styles.chipText,
-              activeCategory === 'all' && { color: colors.forest900 },
+              activeCategory === 'all' && { color: colors.textInverse },
             ]}
           >
             Toutes ({SPECIES.length})
@@ -125,8 +135,9 @@ export default function DiscoverScreen() {
               key={cat}
               onPress={() => setActiveCategory(cat)}
               style={[styles.chip, isActive && styles.chipActive]}
+              activeOpacity={0.85}
             >
-              <Text style={[styles.chipText, isActive && { color: colors.forest900 }]}>
+              <Text style={[styles.chipText, isActive && { color: colors.textInverse }]}>
                 {CATEGORY_LABELS[cat]} ({count})
               </Text>
             </TouchableOpacity>
@@ -135,14 +146,14 @@ export default function DiscoverScreen() {
       </ScrollView>
 
       <ScrollView
-        style={{ flex: 1, paddingHorizontal: 24 }}
+        style={{ flex: 1, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 24 }}
       >
         {filtered.length === 0 ? (
           <View style={{ alignItems: 'center', paddingVertical: 64 }}>
-            <Text style={{ fontSize: 36, marginBottom: 12 }}>🔍</Text>
-            <Text style={{ color: colors.bark600, textAlign: 'center' }}>
+            <Feather name="search" size={32} color={colors.textSubtle} />
+            <Text style={{ color: colors.textMuted, textAlign: 'center', marginTop: 12 }}>
               Aucune plante trouvée
             </Text>
           </View>
@@ -155,39 +166,53 @@ export default function DiscoverScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.forest900 },
-  title: { color: colors.bark100, fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
+  container: { flex: 1, backgroundColor: colors.bg },
+  title: { color: colors.text, fontSize: 26, fontWeight: '700' },
+  subtitle: { color: colors.textSubtle, fontSize: 13, marginTop: 2, marginBottom: 16 },
   searchBox: {
-    backgroundColor: colors.forest700,
-    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 12,
-    marginBottom: 16,
+    gap: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
-  searchInput: { flex: 1, color: colors.bark100, fontSize: 14 },
+  searchInput: { flex: 1, color: colors.text, fontSize: 14 },
   chip: {
     borderRadius: 999,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 8,
-    backgroundColor: colors.forest700,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
-  chipActive: { backgroundColor: colors.leaf400 },
-  chipText: { fontSize: 14, fontWeight: '500', color: colors.bark400 },
-  card: { backgroundColor: colors.forest700, borderRadius: 16, padding: 16, marginBottom: 12 },
+  chipActive: { backgroundColor: colors.brand, borderColor: colors.brand },
+  chipText: { fontSize: 13, fontWeight: '600', color: colors.textMuted },
+  card: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 10,
+  },
   emojiBox: {
-    width: 48,
-    height: 48,
-    backgroundColor: colors.forest800,
-    borderRadius: 12,
+    width: 56,
+    height: 56,
+    backgroundColor: colors.brandSofter,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
-  name: { color: colors.bark100, fontWeight: '600', fontSize: 16 },
-  difficultyPill: { borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2 },
-  scientific: { color: colors.bark600, fontSize: 12, fontStyle: 'italic', marginTop: 2 },
-  description: { color: colors.bark400, fontSize: 12, marginTop: 4, lineHeight: 16 },
-  metaText: { color: colors.bark600, fontSize: 12 },
+  name: { color: colors.text, fontWeight: '700', fontSize: 16 },
+  difficultyPill: { borderRadius: 999, paddingHorizontal: 8, paddingVertical: 3 },
+  difficultyText: { fontSize: 11, fontWeight: '600' },
+  scientific: { color: colors.textSubtle, fontSize: 12, fontStyle: 'italic', marginTop: 2 },
+  description: { color: colors.textMuted, fontSize: 13, marginTop: 4, lineHeight: 18 },
+  metaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  metaText: { color: colors.textSubtle, fontSize: 12 },
 });

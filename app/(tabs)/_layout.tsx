@@ -14,15 +14,15 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: colors.forest900,
-          borderTopColor: colors.forest700,
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
           borderTopWidth: 1,
           paddingBottom: 8,
           paddingTop: 8,
           height: 64,
         },
-        tabBarActiveTintColor: colors.leaf400,
-        tabBarInactiveTintColor: colors.bark600,
+        tabBarActiveTintColor: colors.brand,
+        tabBarInactiveTintColor: colors.textSubtle,
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '600',

@@ -1,3 +1,4 @@
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -24,14 +25,16 @@ export default function PlantsScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Mes Plantes</Text>
-        <Text style={styles.count}>
-          {plants.length} plante{plants.length !== 1 ? 's' : ''}
-        </Text>
+        <View style={styles.countPill}>
+          <Text style={styles.countText}>{plants.length}</Text>
+        </View>
       </View>
 
       {plants.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyEmoji}>🌱</Text>
+          <View style={styles.emptyIcon}>
+            <Text style={{ fontSize: 40 }}>🌱</Text>
+          </View>
           <Text style={styles.emptyTitle}>Aucune plante pour l'instant</Text>
           <Text style={styles.emptyText}>
             Découvre nos 50 espèces et ajoute ta première plante compagnon.
@@ -39,15 +42,20 @@ export default function PlantsScreen() {
           <TouchableOpacity
             onPress={() => router.push('/(tabs)/discover')}
             style={styles.primaryButton}
+            activeOpacity={0.85}
           >
             <Text style={styles.primaryButtonText}>Découvrir des plantes</Text>
+            <Feather name="arrow-right" size={18} color={colors.textInverse} />
           </TouchableOpacity>
         </View>
       ) : (
         <>
-          <Text style={styles.swipeHint}>← Glisse vers la gauche pour supprimer</Text>
+          <View style={styles.hintRow}>
+            <Feather name="chevron-left" size={14} color={colors.textSubtle} />
+            <Text style={styles.swipeHint}>Glisse pour supprimer</Text>
+          </View>
           <ScrollView
-            style={{ flex: 1, paddingHorizontal: 24 }}
+            style={{ flex: 1, paddingHorizontal: 20 }}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 24 }}
           >
@@ -59,12 +67,13 @@ export default function PlantsScreen() {
               />
             ))}
           </ScrollView>
-          <View style={{ paddingHorizontal: 24, paddingBottom: 16 }}>
+          <View style={{ paddingHorizontal: 20, paddingBottom: 16 }}>
             <TouchableOpacity
               onPress={() => router.push('/(tabs)/discover')}
               style={styles.addButton}
+              activeOpacity={0.85}
             >
-              <Text style={{ fontSize: 24 }}>+</Text>
+              <Feather name="plus" size={18} color={colors.brand} />
               <Text style={styles.addButtonText}>Ajouter une plante</Text>
             </TouchableOpacity>
           </View>
@@ -75,50 +84,78 @@ export default function PlantsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.forest900 },
+  container: { flex: 1, backgroundColor: colors.bg },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: 16,
+    paddingBottom: 12,
   },
-  title: { color: colors.bark100, fontSize: 24, fontWeight: 'bold' },
-  count: { color: colors.bark600, fontSize: 14 },
+  title: { color: colors.text, fontSize: 26, fontWeight: '700' },
+  countPill: {
+    minWidth: 32,
+    height: 28,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    backgroundColor: colors.brandSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  countText: { color: colors.brandStrong, fontWeight: '700', fontSize: 13 },
+  hintRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 24,
+    marginBottom: 12,
+  },
+  swipeHint: { color: colors.textSubtle, fontSize: 12 },
   emptyState: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 32,
   },
-  emptyEmoji: { fontSize: 64, marginBottom: 16 },
+  emptyIcon: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: colors.brandSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
   emptyTitle: {
-    color: colors.bark100,
+    color: colors.text,
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: 8,
     textAlign: 'center',
   },
-  emptyText: { color: colors.bark600, textAlign: 'center', marginBottom: 32 },
+  emptyText: { color: colors.textMuted, textAlign: 'center', marginBottom: 32, lineHeight: 22 },
   primaryButton: {
-    backgroundColor: colors.leaf400,
+    backgroundColor: colors.brand,
     borderRadius: 999,
     paddingHorizontal: 24,
-    paddingVertical: 12,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  primaryButtonText: { color: colors.forest900, fontWeight: 'bold' },
-  swipeHint: { color: colors.bark600, fontSize: 12, paddingHorizontal: 24, marginBottom: 12 },
+  primaryButtonText: { color: colors.textInverse, fontWeight: '600', fontSize: 15 },
   addButton: {
-    backgroundColor: colors.forest700,
+    backgroundColor: colors.surface,
+    borderWidth: 1.5,
+    borderColor: colors.brandSoft,
+    borderStyle: 'dashed',
     borderRadius: 16,
-    padding: 16,
+    paddingVertical: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    borderWidth: 1,
-    borderColor: colors.forest600,
   },
-  addButtonText: { color: colors.bark100, fontWeight: '600' },
+  addButtonText: { color: colors.brandStrong, fontWeight: '600', fontSize: 15 },
 });
